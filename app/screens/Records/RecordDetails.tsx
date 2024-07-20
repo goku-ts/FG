@@ -15,6 +15,10 @@ import images, { placeholder } from '../../constants/images';
 
 import { Data } from '../../data';
 import LabelCard from '../../components/cards/LabelCard';
+import AudioPlayer from '../../components/AudioPlayer';
+import { EditButton } from '../../components/buttons/EditButton';
+import { RemoveButton } from '../../components/buttons/RemoveButton';
+import { GenerateCodeButton } from '../../components/buttons/GenerateCodeButton';
 
 const RecordDetails = ({ navigation, route }) => {
 
@@ -67,6 +71,8 @@ const RecordDetails = ({ navigation, route }) => {
         <LabelCard label={"Farm-Input"} details={data?.farm_input} />
         <LabelCard label={"Input Issued"} details={data?.farm_input_items} />
         <LabelCard label={"Date Issued"} details={data?.farm_input_date} />
+        <AudioPlayer />
+        <GenerateCodeButton name={"Generate QR Code"} color={COLORS.primary} />
       </View>
     )
   }
@@ -78,14 +84,26 @@ const RecordDetails = ({ navigation, route }) => {
       <ScreenWrapper>
 
         {/* </View> */}
+        <>
+          <View style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 10,
+            marginBottom: 20,
+            width: SCREEN.width * 0.9,
+          }}>
+            <EditButton name={"Edit"} />
+            <RemoveButton name={"Remove"} color='#EF4444' />
+          </View>
+          <View style={{ marginTop: 10, alignItems: "center" }}>
+            <ProfilePicture image={data?.image} onPress={() => { }} />
+            <InfoCard />
+            <View style={{ marginBottom: 100, marginTop: 100 }} />
+          </View>
+        </>
 
-        <View style={{ marginTop: 10, alignItems: "center" }}>
-          <ProfilePicture image={data?.image} onPress={() => { }} />
-          <InfoCard />
-          <View style={{ marginBottom: 100, marginTop: 100 }} />
-        </View>
-
-      </ScreenWrapper>
+      </ScreenWrapper >
     </>
   );
 }

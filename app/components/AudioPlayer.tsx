@@ -1,6 +1,6 @@
 import { Audio } from 'expo-av';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { SCREEN } from '../constants/theme';
 import { MediumText } from './texts/MediunText';
 
@@ -48,15 +48,12 @@ export default function AudioPlayer() {
             <View style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'space-around',
-                marginRight: 40,
-                width: "100%",
-                height: SCREEN.height * 0.06,
-                borderWidth: 0.5,
-                borderRadius: 10,
+                justifyContent: 'space-between',
+                height: SCREEN.height * 0.04,
+
             }}>
                 <View>
-                    <MediumText text='Verbal Consent' />
+                    <Text style={styles.label}>Verbal Consent</Text>
                 </View>
                 <View style={{
                     flexDirection: 'row',
@@ -65,7 +62,7 @@ export default function AudioPlayer() {
                     <TouchableOpacity
                         style={styles.buttons}
                         onPress={recording ? stopRecording : startRecording}>
-                        {recording ? <IonIcons name="stop" size={25} color="red" /> : <IonIcons name="mic" size={30} color="black" />}
+                        {recording ? <IonIcons name="stop" size={25} color="red" /> : <IonIcons name="play" size={30} color="green" />}
                     </TouchableOpacity>
                 </View>
             </View>
@@ -76,14 +73,19 @@ export default function AudioPlayer() {
 
 const styles = StyleSheet.create({
     container: {
-        width: SCREEN.width * 0.85,
-        height: SCREEN.height * 0.06,
+        width: SCREEN.width * 0.8,
+        height: SCREEN.height * 0.04,
         // alignItems: 'center',
         // justifyContent: 'center',
     },
     buttons: {
-        marginRight: 20,
         alignItems: "center",
-        justifyContent: "center"
-    }
+        justifyContent: "center",
+        marginRight: 30
+    },
+    label: {
+        fontSize: 15,
+        fontWeight: "bold",
+        color: "grey"
+    },
 });

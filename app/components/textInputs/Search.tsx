@@ -29,7 +29,6 @@ const Search: FC<FormInputType> = ({ outlineColor, label, value, onChangeText, o
             style={{
                 width: SCREEN.width * 0.65,
                 height: 40,
-                marginBottom: 10,
                 fontSize: 18,
             }}
         />
