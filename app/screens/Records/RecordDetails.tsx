@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, PermissionsAndroid, Platform } from 'react-native';
 import { COLORS } from '../../constants';
 
 import { dataType } from '../../data';
@@ -19,6 +19,21 @@ import AudioPlayer from '../../components/AudioPlayer';
 import { EditButton } from '../../components/buttons/EditButton';
 import { RemoveButton } from '../../components/buttons/RemoveButton';
 import { GenerateCodeButton } from '../../components/buttons/GenerateCodeButton';
+import QRCode from 'react-native-qrcode-svg';
+import { DownloadCodeButton } from '../../components/buttons/DownloadCodeButton';
+import RNFetchBlob from 'rn-fetch-blob';
+import Share from 'react-native-share';
+
+import { shareAsync } from 'expo-sharing';
+
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
+import { ToastAndroid } from "react-native"
+import RNFS from "react-native-fs"
+import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+import * as Permissions from 'expo-permissions';
+
+
 
 const RecordDetails = ({ navigation, route }) => {
 
@@ -28,6 +43,49 @@ const RecordDetails = ({ navigation, route }) => {
     // let getData = route?.params?.item
     setData(Data[0])
   }, [])
+
+  const [qrValue, setQRValue] = useState('x.com');
+  const [isActive, setIsActive] = useState(false);
+  const [qrImage, setQRImage] = useState('');
+  const [qrRef, setQRRef] = useState();
+
+
+
+  const ref = React.useRef<any>();
+
+  const generateQRCode = () => {
+
+    // ref.current.toDataURL((data: string) => {
+    //   setQRImage( + data)
+    // })
+
+    if (!qrValue) return;
+    setIsActive(true);
+  };
+
+
+
+
+
+
+  function downloadQR() {
+    ref.current.toDataURL(async (data: string) => {
+
+      try {
+        let fileUri = FileSystem.documentDirectory + 'qrcode.png';
+        await FileSystem.writeAsStringAsync(fileUri, data, { encoding: FileSystem.EncodingType.Base64 });
+
+        const asset = await MediaLibrary.createAssetAsync(fileUri);
+        await MediaLibrary.createAlbumAsync("Download", asset, false);
+
+        console.log('QR code saved successfully');
+      } catch (error) {
+        console.log('Error saving QR code:', error);
+      }
+    });
+
+  }
+
 
 
 
@@ -49,10 +107,10 @@ const RecordDetails = ({ navigation, route }) => {
     return (
       <View style={{
         width: SCREEN.width * 0.9,
-        height: SCREEN.height * 0.9,
-        borderWidth: 0.1,
-        borderRadius: 1,
-        elevation: 0.5,
+        height: SCREEN.height * 1.2,
+        // borderWidth: 0.1,
+        // borderRadius: 1,
+        // elevation: 0.5,
         alignItems: "center",
       }}>
         <View style={{ marginBottom: 20 }} />
@@ -72,7 +130,22 @@ const RecordDetails = ({ navigation, route }) => {
         <LabelCard label={"Input Issued"} details={data?.farm_input_items} />
         <LabelCard label={"Date Issued"} details={data?.farm_input_date} />
         <AudioPlayer />
-        <GenerateCodeButton name={"Generate QR Code"} color={COLORS.primary} />
+        <View style={{ marginBottom: 50 }} />
+        {isActive && (
+          <View style={styles.qrCode}>
+            <QRCode
+              value={qrValue}
+              size={200}
+              color="black"
+              backgroundColor="white"
+
+              getRef={(c) => ref.current = c}
+            />
+            <Text style={{ marginTop: 10, fontWeight: "bold", fontSize: 20 }}>{data?.full_name}</Text>
+          </View>
+        )}
+        {isActive && <DownloadCodeButton name={"Download QR Code"} onPress={() => downloadQR()} icon={"download"} />}
+        <GenerateCodeButton name={"Generate QR Code"} color={COLORS.primary} onPress={() => generateQRCode()} icon={"qr-code-outline"} />
       </View>
     )
   }
@@ -99,7 +172,7 @@ const RecordDetails = ({ navigation, route }) => {
           <View style={{ marginTop: 10, alignItems: "center" }}>
             <ProfilePicture image={data?.image} onPress={() => { }} />
             <InfoCard />
-            <View style={{ marginBottom: 100, marginTop: 100 }} />
+            <View style={{ marginBottom: 150 }} />
           </View>
         </>
 
@@ -124,5 +197,10 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
     borderRadius: 75
-  }
+  },
+  qrCode: {
+    marginTop: 20,
+    alignItems: 'center',
+    backgroundColor: "white"
+  },
 });

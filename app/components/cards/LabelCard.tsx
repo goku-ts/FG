@@ -28,6 +28,6 @@ const styles = StyleSheet.create({
     details: {
         color: "black",
         fontSize: 15,
-        marginRight: 30
+        marginRight: 10
     }
 })

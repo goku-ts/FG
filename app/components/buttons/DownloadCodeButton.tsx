@@ -1,7 +1,7 @@
 import { TouchableOpacity, StyleSheet, Text } from "react-native"
 import { FC } from "react"
 import React from "react"
-import { SCREEN } from "../../constants/theme"
+import { COLORS, SCREEN } from "../../constants/theme"
 import IonIcons from '@expo/vector-icons/Ionicons';
 
 type buttonType = {
@@ -11,15 +11,15 @@ type buttonType = {
     icon?: any
 }
 
-export const GenerateCodeButton: FC<buttonType> = ({ name, onPress, color, icon }) => {
+export const DownloadCodeButton: FC<buttonType> = ({ name, onPress, color, icon }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={[styles.button, { backgroundColor: color }]}
+            style={[styles.button]}
             activeOpacity={0.8}
         >
-            <IonIcons name={icon} size={30} color="white" style={{ marginRight: 30 }} />
-            <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>{name}</Text>
+            <IonIcons name={icon} size={30} color="black" style={{ marginRight: 30 }} />
+            <Text style={{ fontSize: 18, fontWeight: "bold", color: "black" }}>{name}</Text>
         </TouchableOpacity>
     )
 }
@@ -35,6 +35,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginBottom: 10,
-        marginTop: 0
+        marginTop: 50,
+        borderWidth: 2,
+        borderColor: COLORS.primary
     },
 })

@@ -4,6 +4,7 @@ import { ScreenWrapper } from '../../components/ScreenWrapper';
 import Search from '../../components/textInputs/Search';
 import { COLORS } from '../../constants';
 import { SCREEN } from '../../constants/theme';
+import QRCodeGenerator from '../../services/GenerateQR';
 
 
 const Records = ({ navigation }) => {
@@ -38,7 +39,6 @@ const Records = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <ScreenWrapper>
-
           <View style={{ height: 100 }} />
         </ScreenWrapper>
       </View>
