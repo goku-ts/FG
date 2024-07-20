@@ -47,17 +47,15 @@ const RecordDetails = ({ navigation, route }) => {
   const [qrValue, setQRValue] = useState('x.com');
   const [isActive, setIsActive] = useState(false);
   const [qrImage, setQRImage] = useState('');
-  const [qrRef, setQRRef] = useState();
+  const [qrName, setQRName] = useState("user");
+
 
 
 
   const ref = React.useRef<any>();
 
   const generateQRCode = () => {
-
-    // ref.current.toDataURL((data: string) => {
-    //   setQRImage( + data)
-    // })
+    setQRName(data?.full_name)
 
     if (!qrValue) return;
     setIsActive(true);
@@ -68,11 +66,11 @@ const RecordDetails = ({ navigation, route }) => {
 
 
 
-  function downloadQR() {
+  function downloadQR(name) {
     ref.current.toDataURL(async (data: string) => {
 
       try {
-        let fileUri = FileSystem.documentDirectory + 'qrcode.png';
+        let fileUri = FileSystem.documentDirectory + `${name}'s-qrcode.png`;
         await FileSystem.writeAsStringAsync(fileUri, data, { encoding: FileSystem.EncodingType.Base64 });
 
         const asset = await MediaLibrary.createAssetAsync(fileUri);
@@ -138,13 +136,12 @@ const RecordDetails = ({ navigation, route }) => {
               size={200}
               color="black"
               backgroundColor="white"
-
               getRef={(c) => ref.current = c}
             />
             <Text style={{ marginTop: 10, fontWeight: "bold", fontSize: 20 }}>{data?.full_name}</Text>
           </View>
         )}
-        {isActive && <DownloadCodeButton name={"Download QR Code"} onPress={() => downloadQR()} icon={"download"} />}
+        {isActive && <DownloadCodeButton name={"Download QR Code"} onPress={() => downloadQR(qrName)} icon={"download"} />}
         <GenerateCodeButton name={"Generate QR Code"} color={COLORS.primary} onPress={() => generateQRCode()} icon={"qr-code-outline"} />
       </View>
     )
