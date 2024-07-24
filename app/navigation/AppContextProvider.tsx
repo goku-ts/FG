@@ -14,8 +14,9 @@ export const AppContextProvider = ({ children }: any) => {
     const [dropListType, setDropListType] = useState("region")
     const [gender, setGender] = React.useState('');
 
-    const [preFinance, setPreFinance] = useState(false)
-    const [farmInput, setFarmInput] = useState(false)
+
+    const [preFinance, setPreFinance] = useState("No")
+    const [farmInput, setFarmInput] = useState("No")
     const [preFinanceDate, setPreFinanceDate] = useState("Date Of Issuance")
     const [farmInputDate, setFarmInputDate] = useState("Date Of Issuance")
     const [date, setDate] = useState(new Date())
@@ -29,6 +30,7 @@ export const AppContextProvider = ({ children }: any) => {
 
     return (
         <ContextProvider.Provider value={{
+
             submit, isSubmit,
             selectedRegion, setSelectedRegion,
             dropListType, setDropListType,

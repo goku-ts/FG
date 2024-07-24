@@ -4,7 +4,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useIsFocused } from '@react-navigation/native';
 import ScanDetails from './ScanDetails';
 import { icons, images } from '../../constants';
-import { SCREEN } from '../../constants/theme';
+import { COLORS, SCREEN } from '../../constants/theme';
 
 
 const item = {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: "white"
+    backgroundColor: COLORS.background
   },
   main: {
     flex: 1,

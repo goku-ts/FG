@@ -1,6 +1,5 @@
 import React, { FC, useState } from "react";
-import { KeyboardTypeOptions, StyleSheet, Text } from "react-native";
-import { TextInput } from "react-native-paper";
+import { KeyboardTypeOptions, StyleSheet, Text, TextInput } from "react-native";
 import { SCREEN } from "../../constants/theme";
 
 type FormInputType = {
@@ -11,17 +10,17 @@ type FormInputType = {
     keyboardType?: KeyboardTypeOptions
     maxlength?: number,
     activeColor?: string
-    outlineColor? : string
+    outlineColor?: string
 }
 
 const PasswordTextInput: FC<FormInputType> = ({ outlineColor, label, value, onChangeText, onBlur, keyboardType, maxlength, activeColor }) => {
     const [isPasswordVisible, setPasswordVisible] = useState(false);
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!isPasswordVisible);
-  };
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!isPasswordVisible);
+    };
 
-   
+
     return (
         <TextInput
             value={value}
@@ -29,17 +28,17 @@ const PasswordTextInput: FC<FormInputType> = ({ outlineColor, label, value, onCh
             onBlur={onBlur}
             maxLength={maxlength}
             keyboardType={keyboardType}
-            mode="outlined"
-            label={label}
-            activeOutlineColor={"green"}
+            placeholder={label}
             secureTextEntry={isPasswordVisible}
-            outlineColor={outlineColor}
-            right={<TextInput.Icon icon={ isPasswordVisible ? "eye": "eye-off"} onPress={togglePasswordVisibility}/>}
             style={{
+
                 width: SCREEN.width * 0.85,
                 height: 50,
-                marginBottom : 10,
-                fontSize : 18
+                marginBottom: 10,
+                fontSize: 18,
+                borderWidth: 0.5,
+                borderRadius: 5,
+                paddingLeft: 20,
             }}
         />
     )

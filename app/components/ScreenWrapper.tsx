@@ -5,7 +5,7 @@ import { COLORS } from "../constants"
 
 export const ScreenWrapper = ({ children }) => {
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
             <KeyboardAvoidingView keyboardVerticalOffset={0} style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
@@ -23,5 +23,6 @@ const styles = StyleSheet.create({
         margin: 10,
         marginLeft: 20,
         marginRight: 20
+
     }
 })

@@ -37,7 +37,7 @@ const Tabs = () => {
                     height: SCREEN.height * 0.08,
                     paddingTop: 5,
                     borderTopWidth: 0.5,
-                    backgroundColor: COLORS.white,
+                    backgroundColor: COLORS.background,
                     position: "absolute",
                     bottom: 20,
                     left: 10,

@@ -3,11 +3,18 @@ import {
   View,
   Text,
   StyleSheet,
-  Image
+  Image,
+  ActivityIndicator,
+  Alert,
+  BackHandler
 } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import app from "../../firebaseConfig";
+import { getAuth, signInWithEmailAndPassword, initializeAuth, } from "firebase/auth";
+
+import ReactNativeAsyncStorage, { AsyncStorageStatic } from '@react-native-async-storage/async-storage';
+
 
 import MobileTextInput from "../../components/textInputs/MobileNumberInput";
 import PasswordTextInput from "../../components/textInputs/PasswordInput";
@@ -15,39 +22,72 @@ import { SubmitButton } from "../../components/buttons/SubmitButton";
 import { ScreenWrapper } from "../../components/ScreenWrapper";
 import { COLORS, images } from "../../constants";
 import { SCREEN } from "../../constants/theme";
+import RegularInput from "../../components/textInputs/RegularInput";
+import { useFocusEffect } from "@react-navigation/core";
 
 const Login = ({ navigation, route }) => {
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert('Are you sure', 'Do you really want to exit?', [
+          {
+            text: 'Cancel',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          { text: 'YES', onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, []),
+  );
+
+
+
+
   const initialValues = {
-    phone_number: "",
+    email: "",
     password: "",
   };
 
   const [message, setMessage] = useState();
-
+  const [loading, setLoading] = useState(false)
 
 
   const validationSchema = Yup.object({
-    phone_number: Yup.string()
-      .required("Mobile Number is required")
-      .min(9, "Enter Valid Mobile Number")
-      .max(9, "Enter Valid Mobile Number"),
+    email: Yup.string()
+      .required("Email is required")
+      .email("Enter a valid email")
+    ,
     password: Yup.string().required("Password is required"),
   });
 
+
+
   const handleSignIn = (values: typeof initialValues) => {
-    // Perform sign-in logic here
-    axios
-      .post("", {
-        phone_number: values.phone_number,
-        password: values.password,
+    setLoading(true)
+    const auth = getAuth(app);
+
+    signInWithEmailAndPassword(auth, values.email, values.password)
+      .then((userCredential) => {
+        // Signed in
+        setLoading(false)
+        const user = userCredential.user;
+        navigation.navigate("Home", { screen: "RecordsStackScreens" })
+        // ...
       })
-      .then((response) => {
-        setMessage(response?.data.message);
-        if (response?.data?.status === "SUCCESS") {
-          navigation.navigate("Notes");
-        }
-      })
-      .catch((e) => console.log(e));
+      .catch((error) => {
+        setLoading(false)
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setMessage(errorMessage)
+      });
   };
 
   const [submit, isSubmit] = useState(false);
@@ -56,9 +96,7 @@ const Login = ({ navigation, route }) => {
     <>
       <ScreenWrapper>
         <View style={styles.container}>
-          {message && (
-            <Text style={[styles.errorText, { fontSize: 12 }]}>{message}</Text>
-          )}
+
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -67,19 +105,22 @@ const Login = ({ navigation, route }) => {
             {({ handleChange, handleSubmit, handleBlur, values, errors }) => (
               <View style={styles.fieldsandbutton}>
                 <View style={{ justifyContent: "center", alignItems: "center", height: SCREEN.height * 0.1 }}>
-                  <Image source={images.logo} style={{ height: 150, width: 200, marginBottom: 30 }} />
+                  <Image source={images.logo} style={{ height: 150, width: 200, marginBottom: 50 }} />
                 </View>
 
-                <MobileTextInput
-                  label="Mobile Number"
-                  value={values.phone_number}
-                  onChangeText={handleChange("phone_number")}
-                  onBlur={handleBlur("phone_number")}
+                {message && (
+                  <Text style={[styles.errorText, { fontSize: 12 }]}>{message}</Text>
+                )}
+                <RegularInput
+                  label="Email"
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
                   activeColor="green"
-                  outlineColor={errors.phone_number ? "red" : null}
+                  outlineColor={errors.email ? "red" : null}
                 />
-                {submit && errors.phone_number && (
-                  <Text style={styles.errorText}>{errors.phone_number}</Text>
+                {submit && errors.email && (
+                  <Text style={styles.errorText}>{errors.email}</Text>
                 )}
 
 
@@ -94,7 +135,7 @@ const Login = ({ navigation, route }) => {
                   <Text style={styles.errorText}>{errors.password}</Text>
                 )}
 
-                <SubmitButton color={COLORS.primary} name={"Login"} onPress={() => {
+                <SubmitButton color={COLORS.primary} isLoading={loading} name={"Login"} onPress={() => {
                   isSubmit(true);
                   handleSubmit();
                 }} />
@@ -184,3 +225,5 @@ const styles = StyleSheet.create({
 });
 
 export default Login;
+
+

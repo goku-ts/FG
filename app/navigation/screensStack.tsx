@@ -19,9 +19,10 @@ import ScanDetails from "../screens/Scan/ScanDetails"
 
 import AddRecord from "../screens/Records/AddRecord"
 
-
+import Tabs from "./tabs"
 
 import { AppContextProvider } from "./AppContextProvider"
+import EditRecord from "../screens/Records/EditRecord"
 
 export const RecordsStackScreens = () => {
 
@@ -29,10 +30,11 @@ export const RecordsStackScreens = () => {
 
     return (
         <AppContextProvider>
-            <Stack.Navigator initialRouteName="record_details" screenOptions={{ headerShown: false }}>
+            <Stack.Navigator initialRouteName="records" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="records" component={Record} />
                 <Stack.Screen name="record_details" component={RecordDetails} />
                 <Stack.Screen name="add_record" component={AddRecord} />
+                <Stack.Screen name="edit_records" component={EditRecord} />
             </Stack.Navigator>
         </AppContextProvider>
     )

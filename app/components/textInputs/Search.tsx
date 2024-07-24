@@ -1,6 +1,5 @@
 import React, { FC } from "react";
-import { KeyboardTypeOptions, StyleSheet, Text } from "react-native";
-import { TextInput } from "react-native-paper";
+import { KeyboardTypeOptions, StyleSheet, Text, TextInput } from "react-native";
 import { SCREEN } from "../../constants/theme";
 
 type FormInputType = {
@@ -21,15 +20,14 @@ const Search: FC<FormInputType> = ({ outlineColor, label, value, onChangeText, o
             value={value}
             onChangeText={onChangeText}
             onBlur={onBlur}
-            maxLength={maxlength}
-            mode="outlined"
-            label={label}
-            activeOutlineColor={activeColor}
-            outlineColor={outlineColor}
+            placeholder={label}
             style={{
                 width: SCREEN.width * 0.65,
                 height: 40,
                 fontSize: 18,
+                borderWidth: 0.5,
+                borderRadius: 5,
+                paddingLeft: 20,
             }}
         />
     )

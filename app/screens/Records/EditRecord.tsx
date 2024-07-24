@@ -35,6 +35,8 @@ import { MediumText } from "../../components/texts/MediunText";
 import { useAppContext } from "../../navigation/AppContextProvider";
 import { createRecord } from "../../dbServices/recordController";
 import { updateRecord } from "../../dbServices/recordController";
+import { Data } from "../../data";
+import { useIsFocused } from "@react-navigation/native";
 
 
 import {
@@ -48,12 +50,69 @@ import app from "../../firebaseConfig";
 import { getFirestore } from 'firebase/firestore';
 import { deleteFileFromDB } from "../../dbServices/mediaUpload";
 
+
 const AddRecord = ({ navigation, route }) => {
 
-  const [modalVisible, setModalVisible] = React.useState(true);
+  const [data, setData] = React.useState<any>(null)
+
+  const isFocused = useIsFocused();
+  const [initialValues, setInitialValues] = React.useState({})
+
+
+  const [modalVisible, setModalVisible] = React.useState(false);
   const [message, setMessage] = useState();
   const [image, setImage] = useState("")
   const [loading, setLoading] = useState(false)
+
+  React.useEffect(() => {
+    try {
+      if (route?.params?.data) {
+        console.log("got data")
+        setInitialValues({
+          id: route?.params?.data?.id,
+          full_name: route?.params?.data?.full_name,
+          // gender: route?.params?.data?.gender,
+          // dob: route?.params?.data?.dob,
+          household_number: route?.params?.data?.household_number,
+          contact: route?.params?.data?.contact,
+          // region: route?.params?.data?.region,
+          card_id: route?.params?.data?.card_id,
+          community: route?.params?.data?.community,
+          district: route?.params?.data?.district,
+          // pre_finance: route?.params?.data?.pre_finance,
+          pre_finance_amount: route?.params?.data?.pre_finance_amount,
+          // farm_input: route?.params?.data?.farm_input,
+          farm_input_items: route?.params?.data?.farm_input_items,
+          // pre_finance_date: route?.params?.data?.pre_finance_date,
+          // farm_input_date: route?.params?.data?.farm_input_date,
+          voice_consent: route?.params?.data?.voice_consent,
+          unique_id: route?.params?.data?.unique_id,
+          // image: route?.params?.data?.image
+        })
+      } else {
+        console.log("no data")
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setDateOfBirth(route?.params?.data?.dob)
+      setGender(route.params?.data?.gender)
+      setSelectedRegion(route?.params?.data?.region)
+      setPreFinance(route?.params?.data?.pre_finance)
+      setFarmInput(route?.params?.data?.farm_input)
+      setPreFinanceDate(route?.params?.data?.pre_finance_date)
+      setFarmInputDate(route?.params?.data?.farm_input_date)
+      setImage(route?.params?.data?.image)
+      setModalVisible(true)
+    }
+
+
+  }, [])
+
+
+
+
+
 
 
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -79,6 +138,8 @@ const AddRecord = ({ navigation, route }) => {
 
 
   const {
+    ImageUrl,
+    setImageUrl,
     submit,
     isSubmit,
     selectedRegion,
@@ -109,19 +170,9 @@ const AddRecord = ({ navigation, route }) => {
 
 
 
-  const initialValues = {
-    full_name: "",
-    household_number: "",
-    contact: "",
-    card_id: "",
-    community: "",
-    district: "",
-    pre_finance_amount: "",
-    farm_input_items: "",
-    voice_consent: "",
-    image: "",
-    unique_id: ""
-  };
+  // const initialValues = {
+
+  // };
 
 
   const validationSchema = Yup.object({
@@ -141,19 +192,9 @@ const AddRecord = ({ navigation, route }) => {
 
 
 
-  async function removeImage() {
-    try {
-      setImage("")
-      await deleteFileFromDB(route?.params?.data?.full_name)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // IMAGE UPLOAD LOGIC
-
   const storage = getStorage(app);
   const db = getFirestore(app);
+
 
   const uploadMediaToStorageBucket = async (
     uri: string,
@@ -194,12 +235,17 @@ const AddRecord = ({ navigation, route }) => {
 
 
 
+  async function removeImage() {
+    try {
+      setImage("")
+      await deleteFileFromDB(route?.params?.data?.full_name)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 
-
-
-  const submitProfile = async (values: typeof initialValues) => {
-
+  const submitProfile = async (values) => {
 
     if (image !== "") {
       const result = await uploadMediaToStorageBucket(
@@ -209,12 +255,6 @@ const AddRecord = ({ navigation, route }) => {
       )
     }
 
-
-
-
-    const uID = values.district.substring(0, 3) + "-" + values.card_id
-
-    // IMAGE UPLOAD LOGIC
 
     const formData = {
       full_name: values?.full_name,
@@ -233,14 +273,15 @@ const AddRecord = ({ navigation, route }) => {
       pre_finance_date: preFinanceDate,
       farm_input_date: farmInputDate,
       voice_consent: values?.voice_consent,
-      unique_id: uID,
+      unique_id: values?.unique_id,
       image: image
     }
 
+
     try {
       setLoading(true)
+      await updateRecord(values?.id, formData)
       console.log(formData)
-      // const response = await createRecord(formData)
     } catch (error) {
       console.log(error)
     } finally {
@@ -248,12 +289,19 @@ const AddRecord = ({ navigation, route }) => {
       navigation.navigate("records")
     }
 
-    // try {
-    //   setLoading(true)
-
+    // const formData = {
+    //   full_name: values.full_name,
+    //   gender: gender,
+    //   dob: dateOfBirth,
+    //   household_number: values.household_number,
+    //   contact: values.contact,
+    //   region: selectedRegion,
+    //   card_id: values.card_id,
+    //   community: values.community,
+    //   district: values.district,
+    //   pre_finance_amount: values.pre_finance_amount
     // }
-
-
+    // console.log(formData)
 
   };
 
@@ -366,7 +414,7 @@ const AddRecord = ({ navigation, route }) => {
       <View style={{ justifyContent: "space-between", marginBottom: 20, marginTop: 20 }}>
         <TouchableOpacity
           onPress={() => {
-            setModalVisible(false);
+            setModalVisible(!modalVisible);
             navigation.navigate("records");
 
           }}
@@ -420,17 +468,17 @@ const AddRecord = ({ navigation, route }) => {
         <View style={styles.radio_button_View}>
           <View style={{ flexDirection: "row", marginRight: 20, alignItems: "center" }}>
             <RadioButton
-              value="male"
-              status={gender === 'male' ? 'checked' : 'unchecked'}
-              onPress={() => setGender('male')}
+              value="M"
+              status={gender === 'M' ? 'checked' : 'unchecked'}
+              onPress={() => setGender('M')}
             />
             <Text style={styles.radio_button_text}>Male</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <RadioButton
-              value="female"
-              status={gender === 'female' ? 'checked' : 'unchecked'}
-              onPress={() => setGender('female')}
+              value="F"
+              status={gender === 'F' ? 'checked' : 'unchecked'}
+              onPress={() => setGender('F')}
             />
             <Text style={styles.radio_button_text}>Female</Text>
           </View>
@@ -490,7 +538,7 @@ const AddRecord = ({ navigation, route }) => {
           <Text style={styles.errorText}>{errors.contact}</Text>
         )}
         {/* GHANA CARD ID */}
-        <RegularInput
+        <MobileTextInput
           label="Ghana Card ID"
           value={values.card_id}
           onChangeText={handleChange("card_id")}
@@ -510,23 +558,23 @@ const AddRecord = ({ navigation, route }) => {
         <View style={styles.radio_button_View}>
           <View style={{ flexDirection: "row", marginRight: 20, alignItems: "center" }}>
             <RadioButton
-              value="True"
-              status={preFinance === true ? 'checked' : 'unchecked'}
-              onPress={() => setPreFinance(true)}
+              value="Yes"
+              status={preFinance === "Yes" ? 'checked' : 'unchecked'}
+              onPress={() => setPreFinance("Yes")}
             />
             <Text style={styles.radio_button_text}>Yes</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <RadioButton
-              value="False"
-              status={preFinance === false ? 'checked' : 'unchecked'}
-              onPress={() => setPreFinance(false)}
+              value="No"
+              status={preFinance === "No" || preFinance === "" ? 'checked' : 'unchecked'}
+              onPress={() => setPreFinance("No")}
             />
             <Text style={styles.radio_button_text}>No</Text>
           </View>
         </View>
 
-        {preFinance ? <>
+        {preFinance === "Yes" ? <>
           <MobileTextInput
             label="Amount Allocated"
             value={values.pre_finance_amount}
@@ -562,28 +610,28 @@ const AddRecord = ({ navigation, route }) => {
         <View style={styles.radio_button_View}>
           <View style={{ flexDirection: "row", marginRight: 20, alignItems: "center" }}>
             <RadioButton
-              value="True"
-              status={farmInput === true ? 'checked' : 'unchecked'}
-              onPress={() => setFarmInput(true)}
+              value="Yes"
+              status={farmInput === "Yes" ? 'checked' : 'unchecked'}
+              onPress={() => setFarmInput("Yes")}
             />
             <Text style={styles.radio_button_text}>Yes</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <RadioButton
-              value="False"
-              status={farmInput === false ? 'checked' : 'unchecked'}
-              onPress={() => setFarmInput(false)}
+              value="No"
+              status={farmInput === "No" || preFinance === "" ? 'checked' : 'unchecked'}
+              onPress={() => setFarmInput("No")}
             />
             <Text style={styles.radio_button_text}>No</Text>
           </View>
         </View>
 
-        {farmInput ? <>
-          <RegularInput
+        {farmInput === "Yes" ? <>
+          <MobileTextInput
             label="Farm Input Allocated"
             value={values.farm_input}
-            onChangeText={handleChange("farm_input_items")}
-            onBlur={handleBlur("farm_input_items")}
+            onChangeText={handleChange("pre_finance_amount")}
+            onBlur={handleBlur("pre_finance_amount")}
           />
           {submit && errors.contact && (
             <Text style={styles.errorText}>{errors.contact}</Text>
@@ -724,4 +772,3 @@ const styles = StyleSheet.create({
 
 
 export default AddRecord
-

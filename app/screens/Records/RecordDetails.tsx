@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, PermissionsAndroid, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, PermissionsAndroid, Platform, Alert } from 'react-native';
 import { COLORS } from '../../constants';
 
 import { dataType } from '../../data';
@@ -32,16 +32,18 @@ import RNFS from "react-native-fs"
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
+import { deleteRecord, getAllRecords } from '../../dbServices/recordController';
+import { deleteFileFromDB } from '../../dbServices/mediaUpload';
 
 
 
 const RecordDetails = ({ navigation, route }) => {
-
-
   const [data, setData] = React.useState<any>()
+
+
   React.useEffect(() => {
-    // let getData = route?.params?.item
-    setData(Data[0])
+    let getData = route?.params?.item
+    setData(getData)
   }, [])
 
   const [qrValue, setQRValue] = useState('x.com');
@@ -70,7 +72,7 @@ const RecordDetails = ({ navigation, route }) => {
     ref.current.toDataURL(async (data: string) => {
 
       try {
-        let fileUri = FileSystem.documentDirectory + `${name}'s-qrcode.png`;
+        let fileUri = FileSystem.documentDirectory + `${name}.png`;
         await FileSystem.writeAsStringAsync(fileUri, data, { encoding: FileSystem.EncodingType.Base64 });
 
         const asset = await MediaLibrary.createAssetAsync(fileUri);
@@ -84,6 +86,27 @@ const RecordDetails = ({ navigation, route }) => {
 
   }
 
+
+  const DeleteRecord = () => {
+    Alert.alert('Are you sure', 'Do you really want to delete this record?', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {
+        text: 'YES', onPress: async () => {
+          try {
+            await deleteRecord(data?.id)
+            await deleteFileFromDB(data?.full_name)
+          } catch (error) {
+            console.log(error)
+          }
+          navigation.navigate("records")
+        }
+      },
+    ])
+  }
 
 
 
@@ -112,6 +135,7 @@ const RecordDetails = ({ navigation, route }) => {
         alignItems: "center",
       }}>
         <View style={{ marginBottom: 20 }} />
+        <LabelCard label={"Unique ID"} details={data?.unique_id} />
         <LabelCard label={"Full Name"} details={data?.full_name} />
         <LabelCard label={"Gender"} details={data?.gender} />
         <LabelCard label={"DOB"} details={data?.dob} />
@@ -154,7 +178,7 @@ const RecordDetails = ({ navigation, route }) => {
       <ScreenWrapper>
 
         {/* </View> */}
-        <>
+        <View style={styles.container}>
           <View style={{
             flexDirection: "row",
             justifyContent: "space-between",
@@ -162,16 +186,17 @@ const RecordDetails = ({ navigation, route }) => {
             marginTop: 10,
             marginBottom: 20,
             width: SCREEN.width * 0.9,
+            backgroundColor: COLORS.background
           }}>
-            <EditButton name={"Edit"} />
-            <RemoveButton name={"Remove"} color='#EF4444' />
+            <EditButton name={"Edit"} onPress={() => navigation.navigate("edit_records", { data })} />
+            <RemoveButton name={"Remove"} color='#EF4444' onPress={() => DeleteRecord()} />
           </View>
           <View style={{ marginTop: 10, alignItems: "center" }}>
             <ProfilePicture image={data?.image} onPress={() => { }} />
             <InfoCard />
             <View style={{ marginBottom: 150 }} />
           </View>
-        </>
+        </View>
 
       </ScreenWrapper >
     </>
@@ -183,9 +208,8 @@ export default RecordDetails
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.lightGray2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: COLORS.background,
+
   },
   profile: {
     justifyContent: "center",

@@ -5,14 +5,15 @@ import { COLORS } from "../constants"
 
 export const Wrapper = ({ children }) => {
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightGray2 }}>
-            <KeyboardAvoidingView keyboardVerticalOffset={0} style={styles.container}
-                behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <KeyboardAvoidingView keyboardVerticalOffset={0} style={styles.container}
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}>
 
                     {children}
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         </SafeAreaView>
     )
 
@@ -21,5 +22,7 @@ export const Wrapper = ({ children }) => {
 const styles = StyleSheet.create({
     container: {
         margin: 10,
+        alignItems: "center",
+
     }
 })

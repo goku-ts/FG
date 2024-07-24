@@ -3,6 +3,8 @@ import { Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 export const COLORS = {
+
+    background: "#FCFBF4",
     // base colors
     primary: "#2fa836",
     primary2: "#84bb27",
