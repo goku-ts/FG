@@ -1,50 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button, Alert, TouchableOpacity, Image, Modal, } from 'react-native';
+import { Text, View, StyleSheet, Button, Alert, TouchableOpacity, Image, Modal, ActivityIndicator, } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useIsFocused } from '@react-navigation/native';
 import ScanDetails from './ScanDetails';
 import { icons, images } from '../../constants';
 import { COLORS, SCREEN } from '../../constants/theme';
+import { CameraView, Camera } from "expo-camera";
+import { getRecord } from '../../dbServices/recordController';
 
 
-const item = {
-  "name": "TOMATO",
-  "description": "vine-ripened goodness",
-  "image": "https://images-prod.healthline.com/hlcmsresource/images/AN_images/tomatoes-1296x728-feature.jpg",
-  "variety": "Roma",
-  "origin": "Western Region",
-  "harvest_date": "15 Nov 2023",
-  "unit_price": "60",
-  "quantity": 25,
-  "type": "Organic",
-  "isAvailable": true,
-  "seller": "Alice Green",
-  "id": 2
-}
 
 export const ScanScreen = ({ navigation, route }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [callcamera, setCallcamera] = useState(false)
-  const [modalVisible, setModalVisible] = useState(false)
-  const [showIconScreen, setshowIconScreen] = useState(true)
+  const [visible, setVisible] = useState(false)
 
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+    const getCameraPermissions = async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
     };
 
-    getBarCodeScannerPermissions();
+    getCameraPermissions();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true);
-    console.log(data)
-    setshowIconScreen(false)
-    setModalVisible(true)
+  const handleBarCodeScanned = async ({ type, data }) => {
+    if (data) setVisible(true)
+    try {
+      const record = await getRecord(data)
+      if (record.exists) {
+        setVisible(false)
+        navigation.navigate("scan_details", { data: record.data() })
+      } else {
+        console.log("no record found")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
   };
 
   if (hasPermission === null) {
@@ -57,30 +52,20 @@ export const ScanScreen = ({ navigation, route }) => {
   const ShowCamera = ({ scanned }) => {
     return (
       <>
-        {isFocused && <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        {isFocused && <CameraView
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barcodeScannerSettings={{
+            barcodeTypes: ["qr", "pdf417"],
+          }}
           style={StyleSheet.absoluteFillObject}
         />}
       </>
     )
   }
 
-  const IconScreen = ({ onPress }) => {
-    return (
-      <View style={styles.main}>
-        <TouchableOpacity
-          style={{ justifyContent: "center", alignItems: "center" }}
-          activeOpacity={0.7}
-          onPress={onPress}
-        >
-          <Image source={icons.scanner} style={{}} />
-          <Text style={{ marginTop: 10 }}>Press Here To Scan QR Code</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
 
-  const ProceedModal = ({ cancel, proceed, visible }) => {
+
+  const ProceedModal = ({ visible }) => {
     return (
       <Modal
         transparent
@@ -92,19 +77,8 @@ export const ScanScreen = ({ navigation, route }) => {
 
           <View style={styles.modalView}>
             <View style={styles.modalTitle}>
-              <Text style={styles.titleText}>Do You Want To Proceed</Text>
-            </View>
-            <View style={styles.buttonView}>
-              <TouchableOpacity style={[styles.button, { backgroundColor: "red", }]} onPress={cancel}>
-                <Text style={styles.buttonText}>
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, { backgroundColor: "green", }]} onPress={proceed}>
-                <Text style={styles.buttonText}>
-                  Proceed
-                </Text>
-              </TouchableOpacity>
+              <Text style={styles.titleText}>Getting Record...</Text>
+              <ActivityIndicator animating size="large" color={COLORS.primary} />
             </View>
           </View>
         </View>
@@ -115,26 +89,8 @@ export const ScanScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {showIconScreen && <IconScreen onPress={() => setCallcamera(true)} />}
-      {callcamera && <ShowCamera scanned={scanned} />}
-      {/* {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />} */}
-      {modalVisible && <ProceedModal
-        cancel={() => {
-          setshowIconScreen(true)
-          setModalVisible(false);
-          setCallcamera(false);
-          setScanned(false);
-
-        }
-        }
-        visible={modalVisible}
-        proceed={() => {
-          setshowIconScreen(true)
-          setModalVisible(false);
-          setCallcamera(false);
-          setScanned(false);
-          navigation.navigate("scan_details", { item: item })
-        }} />}
+      {visible && <ProceedModal visible={visible} />}
+      <ShowCamera scanned={scanned} />
     </View>
   );
 }

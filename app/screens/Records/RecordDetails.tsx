@@ -46,7 +46,7 @@ const RecordDetails = ({ navigation, route }) => {
     setData(getData)
   }, [])
 
-  const [qrValue, setQRValue] = useState('x.com');
+  const [qrValue, setQRValue] = useState(null);
   const [isActive, setIsActive] = useState(false);
   const [qrImage, setQRImage] = useState('');
   const [qrName, setQRName] = useState("user");
@@ -58,8 +58,6 @@ const RecordDetails = ({ navigation, route }) => {
 
   const generateQRCode = () => {
     setQRName(data?.full_name)
-
-    if (!qrValue) return;
     setIsActive(true);
   };
 
@@ -156,17 +154,17 @@ const RecordDetails = ({ navigation, route }) => {
         {isActive && (
           <View style={styles.qrCode}>
             <QRCode
-              value={qrValue}
+              value={data?.id}
               size={200}
-              color="black"
-              backgroundColor="white"
+              color="white"
+              backgroundColor="black"
               getRef={(c) => ref.current = c}
             />
             <Text style={{ marginTop: 10, fontWeight: "bold", fontSize: 20 }}>{data?.full_name}</Text>
           </View>
         )}
-        {isActive && <DownloadCodeButton name={"Download QR Code"} onPress={() => downloadQR(qrName)} icon={"download"} />}
-        <GenerateCodeButton name={"Generate QR Code"} color={COLORS.primary} onPress={() => generateQRCode()} icon={"qr-code-outline"} />
+        {isActive ? <DownloadCodeButton name={"Download QR Code"} onPress={() => downloadQR(qrName)} icon={"download"} /> :
+          <GenerateCodeButton name={"Generate QR Code"} color={COLORS.primary} onPress={() => generateQRCode()} icon={"qr-code-outline"} />}
       </View>
     )
   }

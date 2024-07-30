@@ -13,6 +13,7 @@ import RecordCard from '../../components/cards/RecordCard';
 import { Wrapper } from '../../components/Wrapper';
 import { getAllRecords } from '../../dbServices/recordController';
 import { useIsFocused } from '@react-navigation/native';
+import { storage } from '../../services/localStorage';
 
 
 const Records = ({ navigation }) => {
@@ -60,7 +61,7 @@ const Records = ({ navigation }) => {
       }
     }
     getD()
-  }, [isFocused])
+  }, [])
 
 
   const filteredData = records.filter(item =>
@@ -89,7 +90,7 @@ const Records = ({ navigation }) => {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          marginTop: 20,
+          marginTop: 40,
           width: SCREEN.width * 0.9,
           // backgroundColor: COLORS.background
         }}>
@@ -115,7 +116,7 @@ const Records = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <Wrapper>
-          {/* {refreshing ? <ActivityIndicator /> : null} */}
+          {refreshing ? <ActivityIndicator /> : null}
           <View style={{
             width: SCREEN.width * 0.9,
             height: SCREEN.height * 1,
