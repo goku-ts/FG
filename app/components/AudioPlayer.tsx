@@ -1,7 +1,7 @@
 import { Audio } from 'expo-av';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
-import { SCREEN } from '../constants/theme';
+import { COLORS, SCREEN } from '../constants/theme';
 import { MediumText } from './texts/MediunText';
 
 import IonIcons from '@expo/vector-icons/Ionicons';
@@ -52,7 +52,7 @@ export default function AudioPlayer() {
                 height: SCREEN.height * 0.04,
 
             }}>
-                <View>
+                <View style={styles.labelBackground}>
                     <Text style={styles.label}>Verbal Consent</Text>
                 </View>
                 <View style={{
@@ -81,11 +81,16 @@ const styles = StyleSheet.create({
     buttons: {
         alignItems: "center",
         justifyContent: "center",
-        marginRight: 30
+        marginRight: 10
     },
     label: {
-        fontSize: 15,
-        fontWeight: "bold",
-        color: "grey"
+        fontSize: 16,
+        // fontWeight: "bold",
+        color: COLORS.orange5
     },
+    labelBackground: {
+        backgroundColor: COLORS.orange1,
+        padding: 5,
+        borderRadius: 5
+    }
 });

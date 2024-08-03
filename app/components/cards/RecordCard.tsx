@@ -13,19 +13,31 @@ type RecordCard = {
     gender?: string,
     onPress?: any
     region?: string
+    community?: string
     profile?: string | ""
 }
 
-const RecordCard: React.FC<RecordCard> = ({ name, gender, onPress, region, profile }) => (
+const RecordCard: React.FC<RecordCard> = ({ name, gender, onPress, region, profile, community }) => (
     <TouchableOpacity style={[styles.container]} activeOpacity={0.9} onPress={onPress}>
         <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 15, }}>
-            <Avatar.Image size={60} source={profile === "" ? images.profile_img : { uri: profile }} />
+            {profile === "" ?
+                <View style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: COLORS.gray3,
+                    height: 65,
+                    width: 65,
+                    borderRadius: 35,
+                }}>
+                    <LargeText text={name.substring(0, 1)} color={COLORS.white} />
+                </View> : <Avatar.Image size={80} source={images.profile_img} />}
             <View style={styles.textContainer}>
-                <MediumText text={name} marginTop={-5} />
+                <MediumText text={name.substring(0, 20)} marginTop={0} color={COLORS.gray7} />
                 <View style={{ flexDirection: "row", }}>
-                    <SmallText text={gender} marginRight={15} />
-                    <SmallText text={region} />
+                    <SmallText text={gender} marginRight={20} color={COLORS.gray6} />
+                    <SmallText text={community} color={COLORS.gray6} />
                 </View>
+                <SmallText text={region} color={COLORS.gray6} />
             </View>
         </View>
     </TouchableOpacity>
@@ -36,26 +48,18 @@ export default RecordCard;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.gray1,
         width: SCREEN.width * 0.88,
-        height: SCREEN.height * 0.08,
-        borderRadius: 10,
-        elevation: 0.5,
+        height: SCREEN.height * 0.09,
+        borderRadius: 5,
+        elevation: 1,
         marginLeft: 5,
         marginRight: 5,
-        marginBottom: 3,
+        marginBottom: 4,
         justifyContent: "center",
-        borderWidth: 0.5,
-        borderColor: COLORS.lightGray
-    },
-    price: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        marginRight: 10
     },
     textContainer: {
-        padding: 20,
+        padding: 30,
         marginLeft: 10,
     },
     profile: {

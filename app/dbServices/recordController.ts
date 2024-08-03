@@ -1,6 +1,7 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, query, Timestamp, updateDoc } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, query, Timestamp, updateDoc, where, orderBy, } from "firebase/firestore"
 import app from "../firebaseConfig"
 import { dataType } from "../data"
+import { useState } from "react"
 
 const db = getFirestore(app)
 
@@ -9,6 +10,9 @@ const recordsCollection = collection(db, "records")
 
 
 export async function createRecord(data: any) {
+
+
+
     const dbData = {
         createdAt: Timestamp.now(),
         completedAt: "",
@@ -45,11 +49,26 @@ export async function getAllRecords() {
         querySnapshot.forEach((doc) => {
             records.push({ id: doc.id, ...doc.data() });
         });
-        return records;
+        return records.sort((a, b) => b.createdAt - a.createdAt);
     } catch (error) {
         console.error("Error fetching records:", error);
         throw error; // or handle it as appropriate for your app
     }
 }
 
+export const getRecentUpdates = async (lastSyncTime) => {
+    const updatesCollection = collection(db, 'updates');
+    const q = query(
+        updatesCollection,
+        where('lastUpdated', '>', lastSyncTime),
+        orderBy('lastUpdated')
+    );
+
+    const querySnapshot = await getDocs(q);
+    const newUpdates = [];
+    querySnapshot.forEach((doc) => {
+        newUpdates.push({ id: doc.id, ...doc.data() });
+    });
+    return newUpdates;
+}
 

@@ -1,7 +1,8 @@
 import React, { FC } from "react";
 import { KeyboardTypeOptions, StyleSheet, Text, TextInput } from "react-native";
 
-import { SCREEN } from "../../constants/theme";
+import { COLORS, SCREEN } from "../../constants/theme";
+import { SmallText } from "../texts/SmallText";
 
 type FormInputType = {
     label?: string
@@ -15,22 +16,31 @@ type FormInputType = {
 
 const RegularInput: FC<FormInputType> = ({ outlineColor, label, value, onChangeText, onBlur, activeColor }) => {
     return (
-        <TextInput
-            value={value}
-            onChangeText={onChangeText}
-            onBlur={onBlur}
-            placeholder={label}
-            placeholderTextColor={"gray"}
-            style={{
-                width: SCREEN.width * 0.85,
-                height: 50,
-                marginBottom: 10,
-                fontSize: 18,
-                borderWidth: 0.5,
-                borderRadius: 5,
-                paddingLeft: 20,
-            }}
-        />
+        <>
+            <Text style={{
+                color: COLORS.gray5,
+                marginLeft: 5
+            }}>{label}</Text>
+            <TextInput
+                value={value}
+                onChangeText={onChangeText}
+                onBlur={onBlur}
+                // placeholder={label}
+                // placeholderTextColor={"gray"}
+                style={{
+                    width: SCREEN.width * 0.85,
+                    height: 50,
+                    marginBottom: 10,
+                    fontSize: 18,
+                    // borderWidth: 1,
+                    borderRadius: 5,
+                    paddingLeft: 20,
+                    backgroundColor: COLORS.gray1,
+                    // borderColor: COLORS.primary5
+
+                }}
+            />
+        </>
     )
 }
 

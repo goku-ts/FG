@@ -14,7 +14,7 @@ import { OutlineButton } from '../../components/buttons/OutlineButton copy';
 import images, { placeholder } from '../../constants/images';
 
 import { Data } from '../../data';
-import LabelCard from '../../components/cards/LabelCard';
+import { LabelCard } from '../../components/cards/LabelCard';
 import AudioPlayer from '../../components/AudioPlayer';
 import { EditButton } from '../../components/buttons/EditButton';
 import { RemoveButton } from '../../components/buttons/RemoveButton';
@@ -34,8 +34,9 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import { deleteRecord, getAllRecords } from '../../dbServices/recordController';
 import { deleteFileFromDB } from '../../dbServices/mediaUpload';
-
-
+import { Confirmations } from '../../components/Confirmations';
+import { LargeText } from '../../components/texts/LargeText';
+import { MediumText } from '../../components/texts/MediunText';
 
 const RecordDetails = ({ navigation, route }) => {
   const [data, setData] = React.useState<any>()
@@ -50,7 +51,7 @@ const RecordDetails = ({ navigation, route }) => {
   const [isActive, setIsActive] = useState(false);
   const [qrImage, setQRImage] = useState('');
   const [qrName, setQRName] = useState("user");
-
+  const [isDeleting, setIsDeleting] = useState(false)
 
 
 
@@ -94,13 +95,18 @@ const RecordDetails = ({ navigation, route }) => {
       },
       {
         text: 'YES', onPress: async () => {
+          setIsDeleting(true)
           try {
             await deleteRecord(data?.id)
-            await deleteFileFromDB(data?.full_name)
+            if (data?.image !== "") {
+              await deleteFileFromDB(data?.full_name)
+            }
           } catch (error) {
             console.log(error)
+          } finally {
+            setIsDeleting(false)
+            navigation.navigate("records")
           }
-          navigation.navigate("records")
         }
       },
     ])
@@ -115,7 +121,16 @@ const RecordDetails = ({ navigation, route }) => {
 
           {
             image ? <Image source={{ uri: data?.image }} style={{ height: 150, width: 150, borderRadius: 75 }} />
-              : <Image source={images.profile_img} style={{ height: 150, width: 150, borderRadius: 75 }} />
+              : <View style={{
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: COLORS.gray3,
+                height: 200,
+                width: 200,
+                borderRadius: 100,
+              }}>
+                <LargeText text={data?.full_name.substring(0, 1)} color={COLORS.white} />
+              </View>
           }
         </TouchableOpacity>
       </>
@@ -134,21 +149,20 @@ const RecordDetails = ({ navigation, route }) => {
       }}>
         <View style={{ marginBottom: 20 }} />
         <LabelCard label={"Unique ID"} details={data?.unique_id} />
-        <LabelCard label={"Full Name"} details={data?.full_name} />
-        <LabelCard label={"Gender"} details={data?.gender} />
-        <LabelCard label={"DOB"} details={data?.dob} />
-        <LabelCard label={"Contact"} details={`0${data?.contact}`} />
-        <LabelCard label={"Household No."} details={data?.household_number} />
-        <LabelCard label={"Region"} details={data?.region} />
-        <LabelCard label={"District"} details={data?.district} />
-        <LabelCard label={"Community"} details={data?.community} />
-        <LabelCard label={"Ghana Card ID"} details={data?.card_id} />
-        <LabelCard label={"Pre-Finance"} details={data?.pre_finance} />
-        <LabelCard label={"Amount Issued"} details={data?.pre_finance_amount} />
-        <LabelCard label={"Date Issued"} details={data?.pre_finance_date} />
-        <LabelCard label={"Farm-Input"} details={data?.farm_input} />
-        <LabelCard label={"Input Issued"} details={data?.farm_input_items} />
-        <LabelCard label={"Date Issued"} details={data?.farm_input_date} />
+        <LabelCard label={"Gender"} details={data?.gender === "" ? "N/A" : data?.gender} />
+        <LabelCard label={"DOB"} details={data?.dob === "" ? "N/A" : data?.dob} />
+        <LabelCard label={"Contact"} details={data?.contact === "" ? "N/A" : data?.contact} />
+        <LabelCard label={"Household No."} details={data?.household_number === "" ? "N/A" : data?.household_number} />
+        <LabelCard label={"Region"} details={data?.region === "" ? "N/A" : data?.region} />
+        <LabelCard label={"District"} details={data?.district === "" ? "N/A" : data?.district} />
+        <LabelCard label={"Community"} details={data?.community === "" ? "N/A" : data?.community} />
+        <LabelCard label={"Ghana Card ID"} details={data?.card_id === "" ? "N/A" : data?.card_id} />
+        <LabelCard label={"Pre-Finance"} details={data?.pre_finance === "" ? "N/A" : data?.pre_finance} />
+        <LabelCard label={"Amount Issued"} details={data?.pre_finance_amount === "" ? "N/A" : data?.pre_finance_amount} />
+        <LabelCard label={"Date Issued"} details={data?.pre_finance_date === "" ? "N/A" : data?.pre_finance_date} />
+        <LabelCard label={"Farm-Input"} details={data?.farm_input === "" ? "N/A" : data?.farm_input} />
+        <LabelCard label={"Input Issued"} details={data?.farm_input_items === "" ? "N/A" : data?.farm_input_items} />
+        <LabelCard label={"Date Issued"} details={data?.farm_input_date === "" ? "N/A" : data?.farm_input_date} />
         <AudioPlayer />
         <View style={{ marginBottom: 50 }} />
         {isActive && (
@@ -156,15 +170,15 @@ const RecordDetails = ({ navigation, route }) => {
             <QRCode
               value={data?.id}
               size={200}
-              color="white"
-              backgroundColor="black"
+              color="black"
+              backgroundColor="white"
               getRef={(c) => ref.current = c}
             />
             <Text style={{ marginTop: 10, fontWeight: "bold", fontSize: 20 }}>{data?.full_name}</Text>
           </View>
         )}
         {isActive ? <DownloadCodeButton name={"Download QR Code"} onPress={() => downloadQR(qrName)} icon={"download"} /> :
-          <GenerateCodeButton name={"Generate QR Code"} color={COLORS.primary} onPress={() => generateQRCode()} icon={"qr-code-outline"} />}
+          <GenerateCodeButton name={"Generate QR Code"} color={COLORS.primary6} onPress={() => generateQRCode()} icon={"qr-code-outline"} />}
       </View>
     )
   }
@@ -174,7 +188,7 @@ const RecordDetails = ({ navigation, route }) => {
     <>
 
       <ScreenWrapper>
-
+        {isDeleting && <Confirmations message='Deleting Record' visible={true} color={COLORS.red2} textColor={COLORS.red6} icon={"delete"} />}
         {/* </View> */}
         <View style={styles.container}>
           <View style={{
@@ -186,11 +200,13 @@ const RecordDetails = ({ navigation, route }) => {
             width: SCREEN.width * 0.9,
             backgroundColor: COLORS.background
           }}>
-            <EditButton name={"Edit"} onPress={() => navigation.navigate("edit_records", { data })} />
-            <RemoveButton name={"Remove"} color='#EF4444' onPress={() => DeleteRecord()} />
+            <EditButton onPress={() => navigation.navigate("edit_records", { data })} />
+            <RemoveButton onPress={() => DeleteRecord()} />
           </View>
           <View style={{ marginTop: 10, alignItems: "center" }}>
             <ProfilePicture image={data?.image} onPress={() => { }} />
+
+            <MediumText text={data?.full_name} marginTop={20} color={COLORS.green9} />
             <InfoCard />
             <View style={{ marginBottom: 150 }} />
           </View>
@@ -220,6 +236,9 @@ const styles = StyleSheet.create({
   qrCode: {
     marginTop: 20,
     alignItems: 'center',
-    backgroundColor: "white"
+    justifyContent: 'center',
+    borderWidth: 1,
+    padding: 20,
+    borderRadius: 15
   },
 });

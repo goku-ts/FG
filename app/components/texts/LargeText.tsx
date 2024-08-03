@@ -37,9 +37,10 @@ export const LargeText: FC<largeTextType> = ({
 
 const styles = StyleSheet.create({
     largetext: {
-        fontSize: 20,
+        fontSize: 50,
         fontWeight: "bold",
         marginBottom: 5,
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+        fontFamily: "Poppins-Regular"
     }
 })

@@ -2,21 +2,22 @@ import { TouchableOpacity, StyleSheet, Text } from "react-native"
 import { FC } from "react"
 import React from "react"
 import { COLORS, SCREEN } from "../../constants/theme"
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+
 
 type buttonType = {
-    name: any
-    color?: string
     onPress?: any
 }
 
-export const EditButton: FC<buttonType> = ({ name, onPress, color }) => {
+export const EditButton: FC<buttonType> = ({ onPress, }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={[styles.button, { backgroundColor: color }]}
+            style={[styles.button, { backgroundColor: COLORS.gray1 }]}
             activeOpacity={0.8}
         >
-            <Text style={{ fontSize: 15, color: COLORS.primary }}>{name}</Text>
+            <FontAwesome name="edit" size={24} color={COLORS.gray7} />
         </TouchableOpacity>
     )
 }
@@ -25,12 +26,12 @@ export const EditButton: FC<buttonType> = ({ name, onPress, color }) => {
 
 const styles = StyleSheet.create({
     button: {
-        width: 80,
+        width: 40,
         height: 40,
         borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
         borderWidth: 1,
-        borderColor: COLORS.primary
+        borderColor: COLORS.gray5
     },
 })

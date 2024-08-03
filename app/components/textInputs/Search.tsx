@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { KeyboardTypeOptions, StyleSheet, Text, TextInput } from "react-native";
-import { SCREEN } from "../../constants/theme";
+import { COLORS, SCREEN } from "../../constants/theme";
 
 type FormInputType = {
     label?: string
@@ -22,12 +22,14 @@ const Search: FC<FormInputType> = ({ outlineColor, label, value, onChangeText, o
             onBlur={onBlur}
             placeholder={label}
             style={{
-                width: SCREEN.width * 0.65,
+                backgroundColor: COLORS.gray1,
+                width: SCREEN.width * 0.7,
                 height: 40,
                 fontSize: 18,
-                borderWidth: 0.5,
+                // borderWidth: 1,
                 borderRadius: 5,
                 paddingLeft: 20,
+                // borderColor: COLORS.primary5
             }}
         />
     )

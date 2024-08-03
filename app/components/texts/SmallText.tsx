@@ -6,7 +6,7 @@ import React from "react"
 type smallTextType = {
     text: string
     color?: string
-    weight?: "bold" | "normal"
+    weight?: "bold" | "normal" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900"
     marginTop?: number,
     marginBottom?: number
     marginLeft?: number
@@ -30,9 +30,7 @@ export const SmallText: FC<smallTextType> = ({
 
 const styles = StyleSheet.create({
     smalltext: {
-        fontSize: SIZES.h4,
-        marginLeft: 0,
-        marginTop: Platform.OS === "ios" ? -3 : -5,
-
+        fontSize: 15,
+        fontFamily: "Poppins-Regular"
     }
 })

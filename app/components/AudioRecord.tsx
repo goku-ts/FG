@@ -1,7 +1,7 @@
 import { Audio } from 'expo-av';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { SCREEN } from '../constants/theme';
+import { COLORS, SCREEN } from '../constants/theme';
 import { MediumText } from './texts/MediunText';
 
 import IonIcons from '@expo/vector-icons/Ionicons';
@@ -52,11 +52,13 @@ export default function AudioRecord() {
                 marginRight: 40,
                 width: "100%",
                 height: SCREEN.height * 0.06,
-                borderWidth: 0.5,
+                // borderWidth: 1,
                 borderRadius: 10,
+                backgroundColor: COLORS.gray1,
+                // borderColor: COLORS.primary5
             }}>
                 <View>
-                    <MediumText text='Recordings' />
+                    <MediumText text='Verbal Consent' />
                 </View>
                 <View style={{
                     flexDirection: 'row',
@@ -65,7 +67,7 @@ export default function AudioRecord() {
                     <TouchableOpacity
                         style={styles.buttons}
                         onPress={recording ? stopRecording : startRecording}>
-                        {recording ? <IonIcons name="stop" size={25} color="red" /> : <IonIcons name="mic" size={30} color="black" />}
+                        {recording ? <IonIcons name="stop" size={25} color="red" /> : <IonIcons name="mic" size={25} color="black" />}
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.buttons}

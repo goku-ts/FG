@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { KeyboardTypeOptions, StyleSheet, Text, TextInput } from "react-native";
-import { SCREEN } from "../../constants/theme";
+import { COLORS, SCREEN } from "../../constants/theme";
 
 type FormInputType = {
     label?: string
@@ -22,25 +22,33 @@ const PasswordTextInput: FC<FormInputType> = ({ outlineColor, label, value, onCh
 
 
     return (
-        <TextInput
-            value={value}
-            onChangeText={onChangeText}
-            onBlur={onBlur}
-            maxLength={maxlength}
-            keyboardType={keyboardType}
-            placeholder={label}
-            secureTextEntry={isPasswordVisible}
-            style={{
+        <>
+            <Text style={{
+                color: COLORS.gray5,
+                marginLeft: 5
+            }}>{label}</Text>
 
-                width: SCREEN.width * 0.85,
-                height: 50,
-                marginBottom: 10,
-                fontSize: 18,
-                borderWidth: 0.5,
-                borderRadius: 5,
-                paddingLeft: 20,
-            }}
-        />
+            <TextInput
+                value={value}
+                onChangeText={onChangeText}
+                onBlur={onBlur}
+                maxLength={maxlength}
+                keyboardType={keyboardType}
+                secureTextEntry={isPasswordVisible}
+                style={{
+
+                    width: SCREEN.width * 0.85,
+                    height: 50,
+                    marginBottom: 10,
+                    fontSize: 18,
+                    // borderWidth: 1,
+                    borderRadius: 5,
+                    paddingLeft: 20,
+                    backgroundColor: COLORS.gray1,
+                    // borderColor: COLORS.primary5
+                }}
+            />
+        </>
     )
 }
 

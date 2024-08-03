@@ -17,9 +17,10 @@ export const DownloadCodeButton: FC<buttonType> = ({ name, onPress, color, icon 
             onPress={onPress}
             style={[styles.button]}
             activeOpacity={0.8}
+
         >
-            <IonIcons name={icon} size={30} color="black" style={{ marginRight: 30 }} />
-            <Text style={{ fontSize: 18, fontWeight: "bold", color: "black" }}>{name}</Text>
+            <IonIcons name={icon} size={30} color="white" style={{ marginRight: 30 }} />
+            <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>{name}</Text>
         </TouchableOpacity>
     )
 }
@@ -36,7 +37,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 10,
         marginTop: 50,
-        borderWidth: 2,
-        borderColor: COLORS.primary
+        backgroundColor: COLORS.green6
     },
 })

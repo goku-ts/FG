@@ -6,6 +6,7 @@ import Tabs from './tabs';
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { AuthStack } from './screensStack';
+import { AppContextProvider } from './AppContextProvider';
 
 
 type RootStackParamList = {
@@ -20,6 +21,7 @@ export default function RootNavigation() {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={"white"} />
+
       <NavigationContainer >
         <Stack.Navigator
           screenOptions={{
@@ -35,7 +37,9 @@ export default function RootNavigation() {
           {/*  */}
 
         </Stack.Navigator>
-      </NavigationContainer></>
+      </NavigationContainer>
+
+    </>
 
   );
 }

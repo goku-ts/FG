@@ -22,10 +22,10 @@ export const MediumText: FC<mediumTextType> = ({ color = COLORS.black, text, mar
 
 const styles = StyleSheet.create({
     mediumtext: {
-        fontSize: 18,
-        marginLeft: 10,
-        // fontWeight: "bold",
+        fontSize: 17,
+        // fontWeight: "700",
         marginTop: Platform.OS === "ios" ? 0 : 0,
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+        fontFamily: "Inter-Regular"
     }
 })

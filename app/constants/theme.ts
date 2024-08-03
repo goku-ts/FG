@@ -4,13 +4,75 @@ import { StatusBar } from "expo-status-bar";
 
 export const COLORS = {
 
-    background: "#FCFBF4",
+    gray1: "#F3F4F6",
+    gray2: "#E5E7EB",
+    gray3: "#D1D5DB",
+    gray4: "#9CA3AF",
+    gray5: "#6B7280",
+    gray6: "#4B5563",
+    gray7: "#374151",
+    gray8: "#1F2937",
+    gray9: "#111827",
+
+
+    green1: "#dcfce7",
+    green2: "#bbf7d0",
+    green3: "#86efac",
+    green4: "#4ade80",
+    green5: "#22c55e",
+    green6: "#16a34a",
+    green7: "#15803d",
+    green8: "#166534",
+    green9: "#14532d",
+
+
+    red1: "#FEE2E2",
+    red2: "#FECACA",
+    red3: "#FCA5A5",
+    red4: "#F87171",
+    red5: "#EF4444",
+    red6: "#dc2626",
+    red7: "#B91C1C",
+    red8: "#991b1b",
+    red9: "#7F1D1D",
+
+
+    orange1: "#FFEDD5",
+    orange2: "#FED7AA",
+    orange3: "#FDBA74",
+    orange4: "#FB923C",
+    orange5: "#F97316",
+    orange6: "#EA580C",
+    orange7: "#C2410C",
+    orange8: "#9A3412",
+    orange9: "#7C2D12",
+
+
+    teal1: "#ccfbf1",
+    teal2: "#99f6e4",
+    teal3: "#5eead4",
+    teal4: "#2dd4bf",
+    teal5: "#14b8a6",
+    teal6: "#0d9488",
+    teal7: "#0f766e",
+    teal8: "#115e59",
+    teal9: "#134e4a",
+
+
+    background: "white",
     // base colors
-    primary: "#2fa836",
-    primary2: "#84bb27",
-    primary3: "#b6d999",
-    secondary: "#74b47c",
-    secondary2: "#c4dcb4",
+    primary1: "#dcfce7",
+    primary2: "#86efac",
+    primary3: "#4ade80",
+    primary4: "#22c55e",
+    primary5: "#16a34a",
+    primary6: "#166534",
+    secondary1: "#FB923C",
+    secondary2: "#F97316",
+    secondary3: "#EA580C",
+    tertiary1: "#FB7185",
+    tertiary2: "#F43F5E",
+    tertiary3: "#FBBF24",
 
     // colors
     black: "#1E1B26",
@@ -19,15 +81,6 @@ export const COLORS = {
     lightGray2: "#EFEFF0",
     lightGray3: 'white',
     lightGray4: '#7D7E84',
-    gray: "#2D3038",
-    gray1: "#282C35",
-    darkRed: "#31262F",
-    lightRed: "#C5505E",
-    darkBlue: "#22273B",
-    lightBlue: "#424BAF",
-    darkGreen: "#213432",
-    lightGreen: "#31Ad66",
-
 };
 
 export const SCREEN = {
@@ -35,40 +88,35 @@ export const SCREEN = {
     height: Dimensions.get("screen").height
 }
 
-export const SIZES = {
-    // global sizes
-    base: 8,
-    font: 14,
-    radius: 12,
-    padding: 24,
-    padding2: 36,
 
-    // font sizes
-    largeTitle: 50,
-    h1: 30,
-    h2: 22,
-    h3: 14.5,
-    h4: 14,
-    body1: 30,
-    body2: 20,
-    body3: 16,
-    body4: 14,
+const SIZES = {
+    xSmall: 10,
+    small: 12,
+    medium: 14,
+    large: 16,
+    xLarge: 20,
+    xxLarge: 24,
+    xxxLarge: 28,
+    xxxxLarge: 32
+}
 
-
-};
-
+const FAMILY = {
+    roboto: "Roboto-regular"
+}
 
 export const FONTS = {
-    largeTitle: { fontFamily: "Roboto-regular", fontSize: SIZES.largeTitle, lineHeight: 55 },
-    h1: { fontSize: SIZES.h1, lineHeight: 36 },
-    h2: { fontSize: SIZES.h2, lineHeight: 30 },
-    h3: { fontSize: SIZES.h3, lineHeight: 22 },
-    h4: { fontSize: SIZES.h4, lineHeight: 22 },
-    body1: { fontSize: SIZES.body1, lineHeight: 36 },
-    body2: { fontSize: SIZES.body2, lineHeight: 30 },
-    body3: { fontSize: SIZES.body3, lineHeight: 22 },
-    body4: { fontSize: SIZES.body4, lineHeight: 22 },
+    xSmall: { fontFamily: FAMILY.roboto, fontSize: SIZES.xSmall, lineHeight: 36 },
+    small: { fontFamily: FAMILY.roboto, fontSize: SIZES.small, lineHeight: 30 },
+    medium: { fontFamily: FAMILY.roboto, fontSize: SIZES.medium, lineHeight: 22 },
+    large: { fontFamily: FAMILY.roboto, fontSize: SIZES.large, lineHeight: 22 },
+    xLarge: { fontFamily: FAMILY.roboto, fontSize: SIZES.xLarge, lineHeight: 22 },
+    xxLarge: { fontFamily: FAMILY.roboto, fontSize: SIZES.xxLarge, lineHeight: 22 },
+    xxxLarge: { fontFamily: FAMILY.roboto, fontSize: SIZES.xxxLarge, lineHeight: 22 },
+    xxxxLarge: { fontFamily: FAMILY.roboto, fontSize: SIZES.xxxxLarge, lineHeight: 22 },
 };
+
+
+
 
 const appTheme = { COLORS, SIZES, FONTS, SCREEN };
 

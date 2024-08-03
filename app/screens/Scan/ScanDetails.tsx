@@ -14,7 +14,7 @@ import { OutlineButton } from '../../components/buttons/OutlineButton copy';
 import images, { placeholder } from '../../constants/images';
 
 import { Data } from '../../data';
-import LabelCard from '../../components/cards/LabelCard';
+import { LabelCard } from '../../components/cards/LabelCard';
 import AudioPlayer from '../../components/AudioPlayer';
 import { EditButton } from '../../components/buttons/EditButton';
 import { RemoveButton } from '../../components/buttons/RemoveButton';
@@ -34,6 +34,8 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import { deleteRecord, getAllRecords } from '../../dbServices/recordController';
 import { deleteFileFromDB } from '../../dbServices/mediaUpload';
+import { DetailsCardLong, DetailsCardShort } from '../../components/cards/DetailsCard';
+import { LargeText } from '../../components/texts/LargeText';
 
 
 
@@ -120,14 +122,16 @@ const RecordDetails = ({ navigation, route }) => {
 
           }}
           style={{
-            backgroundColor: "red",
+            backgroundColor: COLORS.red1,
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 20,
             height: 40,
             width: 40,
+            borderWidth: 1,
+            borderColor: COLORS.red5
           }}>
-          <Ionicons name="close" size={25} />
+          <Ionicons name="close" size={25} color={COLORS.red5} />
         </TouchableOpacity>
       </View>
     )
@@ -143,7 +147,19 @@ const RecordDetails = ({ navigation, route }) => {
 
           {
             image ? <Image source={{ uri: data?.image }} style={{ height: 150, width: 150, borderRadius: 75 }} />
-              : <Image source={images.profile_img} style={{ height: 150, width: 150, borderRadius: 75 }} />
+              : <View style={{
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#FCFBF4",
+                height: 200,
+                width: 200,
+                borderRadius: 100,
+                marginBottom: 50,
+                borderWidth: 0.5,
+                borderColor: COLORS.orange8
+              }}>
+                <LargeText text={data?.full_name.substring(0, 1)} color={COLORS.orange5} />
+              </View>
           }
         </TouchableOpacity>
       </>
@@ -161,12 +177,6 @@ const RecordDetails = ({ navigation, route }) => {
         alignItems: "center",
       }}>
         <View style={{ marginBottom: 20 }} />
-        <LabelCard label={"Unique ID"} details={data?.unique_id} />
-        <LabelCard label={"Full Name"} details={data?.full_name} />
-        <LabelCard label={"Gender"} details={data?.gender} />
-        <LabelCard label={"DOB"} details={data?.dob} />
-        <LabelCard label={"Contact"} details={data?.contact} />
-        <LabelCard label={"Household No."} details={data?.household_number} />
         <LabelCard label={"Region"} details={data?.region} />
         <LabelCard label={"District"} details={data?.district} />
         <LabelCard label={"Community"} details={data?.community} />
@@ -189,10 +199,32 @@ const RecordDetails = ({ navigation, route }) => {
           <CloseButtonHeader />
           {/* </View> */}
           <View style={styles.container}>
-            <View style={{ marginTop: 10, alignItems: "center" }}>
-              <ProfilePicture image={data?.image} onPress={() => { }} />
-              <InfoCard />
-            </View>
+
+            {data ? <View style={{ marginTop: 10, }}>
+              <View style={{ alignItems: "center" }}>
+                <ProfilePicture image={data?.image} onPress={() => { }} />
+              </View>
+              <DetailsCardLong label={"Full Name"} details={data?.full_name} />
+              <DetailsCardLong label={"Unique ID"} details={data?.unique_id} />
+
+              <DetailsCardLong label={"Gender"} details={data?.gender === "" ? "N/A" : data?.gender === "M" ? "Male" : "FEMALE"} />
+
+              <DetailsCardLong label={"Contact"} details={data?.contact === "" ? "N/A" : data?.contact} />
+              <DetailsCardLong label={"Household No."} details={data?.household_number === "" ? "N/A" : data?.household_number} />
+
+              <DetailsCardLong label={"Region"} details={data?.region === "" ? "N/A" : data?.region} />
+              <DetailsCardLong label={"District"} details={data?.district === "" ? "N/A" : data?.district} />
+              <DetailsCardLong label={"Community"} details={data?.community === "" ? "N/A" : data?.community} />
+              {/* <InfoCard /> */}
+            </View> :
+              <View style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <Text>NO RECORD FOUND</Text>
+              </View>
+            }
           </View>
 
         </ScreenWrapper >
@@ -207,7 +239,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
-
+    alignItems: "center"
   },
   profile: {
     justifyContent: "center",

@@ -1,22 +1,23 @@
 import { TouchableOpacity, StyleSheet, Text } from "react-native"
 import { FC } from "react"
 import React from "react"
-import { SCREEN } from "../../constants/theme"
+import { COLORS, SCREEN } from "../../constants/theme"
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 type buttonType = {
-    name: any
     color?: string
     onPress?: any
 }
 
-export const RemoveButton: FC<buttonType> = ({ name, onPress, color }) => {
+export const RemoveButton: FC<buttonType> = ({ onPress, color }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={[styles.button, { backgroundColor: color }]}
+            style={[styles.button, { backgroundColor: COLORS.red1 }]}
             activeOpacity={0.8}
         >
-            <Text style={{ fontSize: 15, color: "white" }}>{name}</Text>
+            <MaterialCommunityIcons name="delete-forever" size={30} color={COLORS.red5} />
         </TouchableOpacity>
     )
 }
@@ -25,10 +26,12 @@ export const RemoveButton: FC<buttonType> = ({ name, onPress, color }) => {
 
 const styles = StyleSheet.create({
     button: {
-        width: 100,
+        width: 40,
         height: 40,
         borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
+        borderWidth: 1,
+        borderColor: COLORS.red5
     },
 })

@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { SCREEN } from '../../constants/theme'
+import React, { FC } from 'react'
+import { COLORS, SCREEN } from '../../constants/theme'
+import Entypo from '@expo/vector-icons/Entypo';
 
-export default function LabelCard({ details, label }) {
+
+export const LabelCard: FC<{ label: any, details: any }> = ({ details, label }) => {
     return (
         <View style={{
             flexDirection: "row",
@@ -13,7 +15,9 @@ export default function LabelCard({ details, label }) {
             alignItems: "center",
             justifyContent: "space-between"
         }}>
-            <Text style={styles.label}>{label} </Text>
+            <View style={styles.labelBackground}>
+                <Text style={styles.label}>{label} </Text>
+            </View>
             <Text style={styles.details}>{details}</Text>
         </View>
     )
@@ -21,13 +25,19 @@ export default function LabelCard({ details, label }) {
 
 const styles = StyleSheet.create({
     label: {
-        fontSize: 15,
-        fontWeight: "bold",
-        color: "grey"
+        fontSize: 16,
+        // fontWeight: "bold",
+        color: COLORS.orange5
     },
     details: {
-        color: "black",
-        fontSize: 15,
-        marginRight: 10
+        color: COLORS.green9,
+        fontSize: 16,
+        marginRight: 10,
+        // fontWeight: "bold"
+    },
+    labelBackground: {
+        backgroundColor: COLORS.orange1,
+        padding: 5,
+        borderRadius: 5
     }
 })

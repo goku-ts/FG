@@ -49,9 +49,11 @@ import app from "../../firebaseConfig";
 
 import { getFirestore } from 'firebase/firestore';
 import { deleteFileFromDB } from "../../dbServices/mediaUpload";
+import { Confirmations } from "../../components/Confirmations";
 
 
-const AddRecord = ({ navigation, route }) => {
+
+const EditRecord = ({ navigation, route }) => {
 
   const [data, setData] = React.useState<any>(null)
 
@@ -63,11 +65,11 @@ const AddRecord = ({ navigation, route }) => {
   const [message, setMessage] = useState();
   const [image, setImage] = useState("")
   const [loading, setLoading] = useState(false)
+  const [uri, setUri] = useState("")
 
   React.useEffect(() => {
     try {
       if (route?.params?.data) {
-        console.log("got data")
         setInitialValues({
           id: route?.params?.data?.id,
           full_name: route?.params?.data?.full_name,
@@ -138,8 +140,6 @@ const AddRecord = ({ navigation, route }) => {
 
 
   const {
-    ImageUrl,
-    setImageUrl,
     submit,
     isSubmit,
     selectedRegion,
@@ -247,41 +247,49 @@ const AddRecord = ({ navigation, route }) => {
 
   const submitProfile = async (values) => {
 
-    if (image !== "") {
-      const result = await uploadMediaToStorageBucket(
-        image,
-        "image",
-        values?.full_name
-      )
-    }
-
-
-    const formData = {
-      full_name: values?.full_name,
-      gender: gender,
-      dob: dateOfBirth,
-      household_number: values?.household_number,
-      contact: values?.contact,
-      region: selectedRegion,
-      card_id: values?.card_id,
-      community: values?.community,
-      district: values?.district,
-      pre_finance: preFinance,
-      pre_finance_amount: values?.pre_finance_amount,
-      farm_input: farmInput,
-      farm_input_items: values?.farm_input_items,
-      pre_finance_date: preFinanceDate,
-      farm_input_date: farmInputDate,
-      voice_consent: values?.voice_consent,
-      unique_id: values?.unique_id,
-      image: image
-    }
 
 
     try {
       setLoading(true)
+
+
+      let imageUrl = ""
+
+      if (image !== "") {
+        const result: any = await uploadMediaToStorageBucket(
+          image,
+          "image",
+          values?.full_name
+        )
+        if (result) { imageUrl = result?.fileUrl }
+      }
+
+
+      const formData = {
+        full_name: values?.full_name,
+        gender: gender,
+        dob: dateOfBirth,
+        household_number: values?.household_number,
+        contact: values?.contact,
+        region: selectedRegion,
+        card_id: values?.card_id,
+        community: values?.community,
+        district: values?.district,
+        pre_finance: preFinance,
+        pre_finance_amount: values?.pre_finance_amount,
+        farm_input: farmInput,
+        farm_input_items: values?.farm_input_items,
+        pre_finance_date: preFinanceDate,
+        farm_input_date: farmInputDate,
+        voice_consent: values?.voice_consent,
+        unique_id: values?.unique_id,
+        image: imageUrl
+      }
+
+
+
       await updateRecord(values?.id, formData)
-      console.log(formData)
+      // console.log(formData)
     } catch (error) {
       console.log(error)
     } finally {
@@ -415,18 +423,20 @@ const AddRecord = ({ navigation, route }) => {
         <TouchableOpacity
           onPress={() => {
             setModalVisible(!modalVisible);
-            navigation.navigate("records");
+            navigation.navigate("record_details");
 
           }}
           style={{
-            backgroundColor: "red",
+            backgroundColor: COLORS.red1,
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 20,
             height: 40,
             width: 40,
+            borderWidth: 1,
+            borderColor: COLORS.red5
           }}>
-          <Ionicons name="close" size={25} />
+          <Ionicons name="close" size={25} color={COLORS.red5} />
         </TouchableOpacity>
       </View>
     )
@@ -458,13 +468,13 @@ const AddRecord = ({ navigation, route }) => {
           name={dateOfBirth}
           iconName={"chevron-down-circle-outline"}
           onPress={() => toggleDateOfBirthPicker()}
-          backgroundColor={COLORS.lightGray3}
+          label="Date of Birth"
         />
         {submit && errors.household_number && (
           <Text style={styles.errorText}>{errors.household_number}</Text>
         )}
         {/* GENDER */}
-        <MediumText text="Gender" />
+
         <View style={styles.radio_button_View}>
           <View style={{ flexDirection: "row", marginRight: 20, alignItems: "center" }}>
             <RadioButton
@@ -501,7 +511,7 @@ const AddRecord = ({ navigation, route }) => {
           name={selectedRegion}
           iconName={"chevron-down-circle-outline"}
           onPress={() => { sheetRef.current.open(); setDropListType("region") }}
-          backgroundColor={COLORS.lightGray3}
+          label="Region"
         />
         {submit && errors.household_number && (
           <Text style={styles.errorText}>{errors.household_number}</Text>
@@ -548,7 +558,7 @@ const AddRecord = ({ navigation, route }) => {
           <Text style={styles.errorText}>{errors.card_id}</Text>
         )}
 
-        <View style={{ width: 350, height: 1, backgroundColor: "grey", marginBottom: 20 }} />
+        <View style={{ width: 350, height: 1, backgroundColor: COLORS.gray2, marginBottom: 20 }} />
 
 
 
@@ -595,7 +605,7 @@ const AddRecord = ({ navigation, route }) => {
             name={preFinanceDate}
             iconName={"chevron-down-circle-outline"}
             onPress={() => togglePreFinanceDatePicker()}
-            backgroundColor={COLORS.lightGray3}
+            label="Date of Allocation"
           />
           {submit && errors.household_number && (
             <Text style={styles.errorText}>{errors.household_number}</Text>
@@ -646,20 +656,20 @@ const AddRecord = ({ navigation, route }) => {
             name={farmInputDate}
             iconName={"chevron-down-circle-outline"}
             onPress={() => toggleFarmInputDatePicker()}
-            backgroundColor={COLORS.lightGray3}
+            label="Date of Allocation"
           />
           {submit && errors.household_number && (
             <Text style={styles.errorText}>{errors.household_number}</Text>
           )}
         </> : <></>}
 
-        <View style={{ width: 350, height: 1, backgroundColor: "grey", marginBottom: 20 }} />
+        <View style={{ width: 350, height: 1, backgroundColor: COLORS.gray2, marginBottom: 20 }} />
         {/* VERBAL CONSENT */}
 
         <AudioRecord />
 
         <View style={{ marginBottom: 40 }} />
-        <SubmitButton color={COLORS.primary} name={"Add Record"} isLoading={loading} onPress={() => {
+        <SubmitButton color={COLORS.green6} name={"Update Record"} onPress={() => {
           isSubmit(true);
           handleSubmit();
 
@@ -675,6 +685,7 @@ const AddRecord = ({ navigation, route }) => {
   return (
     <>
       <Modal visible={modalVisible} animationType="slide" presentationStyle="formSheet">
+        {loading && <Confirmations visible={loading} message={"Updating Record"} icon={"filetext1"} />}
         <ScreenWrapper>
           <Formik
             initialValues={initialValues}
@@ -765,10 +776,10 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   radio_button_text: {
-    fontSize: 18,
+    fontSize: 15,
     color: "grey"
   }
 })
 
 
-export default AddRecord
+export default EditRecord

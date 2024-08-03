@@ -25,12 +25,12 @@ export const AppContextProvider = ({ children }: any) => {
     const [showPreFinanceDatePicker, setShowPreFinanceDatePicker] = useState(false)
     const [dateOfBirth, setDateOfBirth] = useState("Date Of Birth")
     const [showFarmInputDatePicker, setShowFarmInputDatePicker] = useState(false)
-
+    const [networkError, setNetworkError] = useState(false)
 
 
     return (
         <ContextProvider.Provider value={{
-
+            networkError, setNetworkError,
             submit, isSubmit,
             selectedRegion, setSelectedRegion,
             dropListType, setDropListType,

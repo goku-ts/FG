@@ -27,7 +27,7 @@ const Tabs = () => {
                 tabBarShowLabel: true,
                 headerShown: false,
                 headerShadowVisible: false,
-                tabBarActiveTintColor: COLORS.primary,
+                tabBarActiveTintColor: COLORS.green5,
                 tabBarLabelStyle: {
                     fontSize: 13,
                     fontWeight: "bold",
@@ -45,7 +45,7 @@ const Tabs = () => {
                     borderRadius: 40
                 },
                 tabBarIcon: ({ focused }) => {
-                    const tintColor = focused ? COLORS.primary : COLORS.lightGray4;
+                    const tintColor = focused ? COLORS.green5 : COLORS.gray4;
 
                     switch (route.name) {
                         case "Records":

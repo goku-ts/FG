@@ -103,7 +103,7 @@ const Login = ({ navigation, route }) => {
             onSubmit={handleSignIn}
           >
             {({ handleChange, handleSubmit, handleBlur, values, errors }) => (
-              <View style={styles.fieldsandbutton}>
+              <View >
                 <View style={{ justifyContent: "center", alignItems: "center", height: SCREEN.height * 0.1 }}>
                   <Image source={images.logo} style={{ height: 150, width: 200, marginBottom: 50 }} />
                 </View>
@@ -116,8 +116,6 @@ const Login = ({ navigation, route }) => {
                   value={values.email}
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
-                  activeColor="green"
-                  outlineColor={errors.email ? "red" : null}
                 />
                 {submit && errors.email && (
                   <Text style={styles.errorText}>{errors.email}</Text>
@@ -129,13 +127,13 @@ const Login = ({ navigation, route }) => {
                   value={values.password}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
-                  activeColor="green"
+
                 />
                 {submit && errors.password && (
                   <Text style={styles.errorText}>{errors.password}</Text>
                 )}
 
-                <SubmitButton color={COLORS.primary} isLoading={loading} name={"Login"} onPress={() => {
+                <SubmitButton color={COLORS.green6} isLoading={loading} name={"Login"} onPress={() => {
                   isSubmit(true);
                   handleSubmit();
                 }} />
@@ -151,19 +149,20 @@ const Login = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: SCREEN.height * 0.15
-  },
-  input: {
-    width: 300,
-    height: 40,
-    borderColor: "black",
-    borderWidth: 1,
-    borderRadius: 15,
-    marginBottom: 8,
-    paddingHorizontal: 8,
-    flexDirection: "row",
+    marginTop: SCREEN.height * 0.15,
     alignItems: "center",
   },
+  // input: {
+  //   width: 300,
+  //   height: 40,
+  //   borderColor: "black",
+  //   borderWidth: 1,
+  //   borderRadius: 15,
+  //   marginBottom: 8,
+  //   paddingHorizontal: 8,
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  // },
   passwordContainer: {
     width: 300,
     height: 40,
@@ -201,9 +200,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
-  fieldsandbutton: {
-    alignItems: "center",
-  },
+  // fieldsandbutton: {
+  //   alignItems: "center",
+  // },
   icon: {
     marginRight: 10,
   },

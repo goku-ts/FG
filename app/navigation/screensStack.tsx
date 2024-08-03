@@ -29,14 +29,14 @@ export const RecordsStackScreens = () => {
     const Stack = createStackNavigator()
 
     return (
-        <AppContextProvider>
-            <Stack.Navigator initialRouteName="records" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="records" component={Record} />
-                <Stack.Screen name="record_details" component={RecordDetails} />
-                <Stack.Screen name="add_record" component={AddRecord} />
-                <Stack.Screen name="edit_records" component={EditRecord} />
-            </Stack.Navigator>
-        </AppContextProvider>
+
+        <Stack.Navigator initialRouteName="records" screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="records" component={Record} />
+            <Stack.Screen name="record_details" component={RecordDetails} />
+            <Stack.Screen name="add_record" component={AddRecord} />
+            <Stack.Screen name="edit_records" component={EditRecord} />
+        </Stack.Navigator>
+
     )
 }
 

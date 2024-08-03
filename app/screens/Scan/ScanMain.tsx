@@ -7,13 +7,19 @@ import { icons, images } from '../../constants';
 import { COLORS, SCREEN } from '../../constants/theme';
 import { CameraView, Camera } from "expo-camera";
 import { getRecord } from '../../dbServices/recordController';
-
+import { Confirmations } from '../../components/Confirmations';
+import { Network } from '../../components/Network';
+import { useAppContext } from '../../navigation/AppContextProvider';
 
 
 export const ScanScreen = ({ navigation, route }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [visible, setVisible] = useState(false)
+  const {
+    networkError,
+    setNetworkError
+  } = useAppContext()
 
   const isFocused = useIsFocused();
 
@@ -26,8 +32,12 @@ export const ScanScreen = ({ navigation, route }) => {
     getCameraPermissions();
   }, []);
 
+
+
+
   const handleBarCodeScanned = async ({ type, data }) => {
     if (data) setVisible(true)
+    console.log(data)
     try {
       const record = await getRecord(data)
       if (record.exists) {
@@ -35,6 +45,8 @@ export const ScanScreen = ({ navigation, route }) => {
         navigation.navigate("scan_details", { data: record.data() })
       } else {
         console.log("no record found")
+        setVisible(false)
+        navigation.navigate("scan_details", { data: record.data() })
       }
     } catch (error) {
       console.log(error)
@@ -65,31 +77,12 @@ export const ScanScreen = ({ navigation, route }) => {
 
 
 
-  const ProceedModal = ({ visible }) => {
-    return (
-      <Modal
-        transparent
-        statusBarTranslucent
-        visible={visible}
-        animationType='slide'
-      >
-        <View style={styles.modalContainer}>
-
-          <View style={styles.modalView}>
-            <View style={styles.modalTitle}>
-              <Text style={styles.titleText}>Getting Record...</Text>
-              <ActivityIndicator animating size="large" color={COLORS.primary} />
-            </View>
-          </View>
-        </View>
-      </Modal>
-    )
-  }
 
 
   return (
     <View style={styles.container}>
-      {visible && <ProceedModal visible={visible} />}
+      {networkError && <Network cancel={null} retry={null} visible={networkError} />}
+      {visible && <Confirmations visible={visible} message={"Getting Record"} color={COLORS.green1} textColor={COLORS.green9} icon={"scan1"} />}
       <ShowCamera scanned={scanned} />
     </View>
   );

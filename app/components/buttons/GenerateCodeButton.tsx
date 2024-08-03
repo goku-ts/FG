@@ -1,7 +1,7 @@
 import { TouchableOpacity, StyleSheet, Text } from "react-native"
 import { FC } from "react"
 import React from "react"
-import { SCREEN } from "../../constants/theme"
+import { COLORS, SCREEN } from "../../constants/theme"
 import IonIcons from '@expo/vector-icons/Ionicons';
 
 type buttonType = {
@@ -15,7 +15,7 @@ export const GenerateCodeButton: FC<buttonType> = ({ name, onPress, color, icon 
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={[styles.button, { backgroundColor: color }]}
+            style={[styles.button, { backgroundColor: COLORS.green6 }]}
             activeOpacity={0.8}
         >
             <IonIcons name={icon} size={30} color="white" style={{ marginRight: 30 }} />

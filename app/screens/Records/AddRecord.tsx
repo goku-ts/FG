@@ -35,6 +35,7 @@ import { MediumText } from "../../components/texts/MediunText";
 import { useAppContext } from "../../navigation/AppContextProvider";
 import { createRecord } from "../../dbServices/recordController";
 import { updateRecord } from "../../dbServices/recordController";
+import { Confirmations } from "../../components/Confirmations";
 
 
 import {
@@ -47,6 +48,7 @@ import app from "../../firebaseConfig";
 
 import { getFirestore } from 'firebase/firestore';
 import { deleteFileFromDB } from "../../dbServices/mediaUpload";
+import { SmallText } from "../../components/texts/SmallText";
 
 const AddRecord = ({ navigation, route }) => {
 
@@ -173,9 +175,7 @@ const AddRecord = ({ navigation, route }) => {
       return new Promise((resolve, reject) => {
         upload.on(
           'state_changed',
-          (snapshot) => {
-            console.log(snapshot.bytesTransferred, '/', snapshot.totalBytes);
-          },
+          (snapshot) => { },
           (error) => reject(error),
           () => {
             getDownloadURL(upload.snapshot.ref)
@@ -201,59 +201,54 @@ const AddRecord = ({ navigation, route }) => {
   const submitProfile = async (values: typeof initialValues) => {
 
 
-    if (image !== "") {
-      const result = await uploadMediaToStorageBucket(
-        image,
-        "image",
-        values?.full_name
-      )
-    }
-
-
-
-
-    const uID = values.district.substring(0, 3) + "-" + values.card_id
-
-    // IMAGE UPLOAD LOGIC
-
-    const formData = {
-      full_name: values?.full_name,
-      gender: gender,
-      dob: dateOfBirth,
-      household_number: values?.household_number,
-      contact: values?.contact,
-      region: selectedRegion,
-      card_id: values?.card_id,
-      community: values?.community,
-      district: values?.district,
-      pre_finance: preFinance,
-      pre_finance_amount: values?.pre_finance_amount,
-      farm_input: farmInput,
-      farm_input_items: values?.farm_input_items,
-      pre_finance_date: preFinanceDate,
-      farm_input_date: farmInputDate,
-      voice_consent: values?.voice_consent,
-      unique_id: uID,
-      image: image
-    }
-
     try {
+
       setLoading(true)
-      console.log(formData)
-      // const response = await createRecord(formData)
+
+      let imageUrl = ""
+
+      if (image !== "") {
+        const result: any = await uploadMediaToStorageBucket(
+          image,
+          "image",
+          values?.full_name
+        )
+        if (result) { imageUrl = result?.fileUrl }
+      }
+
+      const uID = values.district.substring(0, 3) + "-" + values.card_id
+
+      // IMAGE UPLOAD LOGIC
+
+      const formData = {
+        full_name: values?.full_name,
+        gender: gender,
+        dob: dateOfBirth,
+        household_number: values?.household_number,
+        contact: values?.contact,
+        region: selectedRegion,
+        card_id: values?.card_id,
+        community: values?.community,
+        district: values?.district,
+        pre_finance: preFinance,
+        pre_finance_amount: values?.pre_finance_amount,
+        farm_input: farmInput,
+        farm_input_items: values?.farm_input_items,
+        pre_finance_date: preFinanceDate,
+        farm_input_date: farmInputDate,
+        voice_consent: values?.voice_consent,
+        unique_id: uID,
+        image: imageUrl
+      }
+
+
+      const response = await createRecord(formData)
     } catch (error) {
       console.log(error)
     } finally {
       setLoading(false)
       navigation.navigate("records")
     }
-
-    // try {
-    //   setLoading(true)
-
-    // }
-
-
 
   };
 
@@ -371,14 +366,16 @@ const AddRecord = ({ navigation, route }) => {
 
           }}
           style={{
-            backgroundColor: "red",
+            backgroundColor: COLORS.red1,
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 20,
             height: 40,
             width: 40,
+            borderWidth: 1,
+            borderColor: COLORS.red6
           }}>
-          <Ionicons name="close" size={25} />
+          <Ionicons name="close" size={25} color={COLORS.red6} />
         </TouchableOpacity>
       </View>
     )
@@ -410,13 +407,12 @@ const AddRecord = ({ navigation, route }) => {
           name={dateOfBirth}
           iconName={"chevron-down-circle-outline"}
           onPress={() => toggleDateOfBirthPicker()}
-          backgroundColor={COLORS.lightGray3}
+          label="Date of Birth"
         />
         {submit && errors.household_number && (
           <Text style={styles.errorText}>{errors.household_number}</Text>
         )}
         {/* GENDER */}
-        <MediumText text="Gender" />
         <View style={styles.radio_button_View}>
           <View style={{ flexDirection: "row", marginRight: 20, alignItems: "center" }}>
             <RadioButton
@@ -453,7 +449,7 @@ const AddRecord = ({ navigation, route }) => {
           name={selectedRegion}
           iconName={"chevron-down-circle-outline"}
           onPress={() => { sheetRef.current.open(); setDropListType("region") }}
-          backgroundColor={COLORS.lightGray3}
+          label="Region"
         />
         {submit && errors.household_number && (
           <Text style={styles.errorText}>{errors.household_number}</Text>
@@ -547,7 +543,7 @@ const AddRecord = ({ navigation, route }) => {
             name={preFinanceDate}
             iconName={"chevron-down-circle-outline"}
             onPress={() => togglePreFinanceDatePicker()}
-            backgroundColor={COLORS.lightGray3}
+            label="Date of Pre-Finance Issue"
           />
           {submit && errors.household_number && (
             <Text style={styles.errorText}>{errors.household_number}</Text>
@@ -595,10 +591,10 @@ const AddRecord = ({ navigation, route }) => {
             onChange={onChangeDateOfFarmInputIssue}
           />}
           <Dropdown
+            label="Farm Input Date"
             name={farmInputDate}
             iconName={"chevron-down-circle-outline"}
             onPress={() => toggleFarmInputDatePicker()}
-            backgroundColor={COLORS.lightGray3}
           />
           {submit && errors.household_number && (
             <Text style={styles.errorText}>{errors.household_number}</Text>
@@ -611,12 +607,9 @@ const AddRecord = ({ navigation, route }) => {
         <AudioRecord />
 
         <View style={{ marginBottom: 40 }} />
-        <SubmitButton color={COLORS.primary} name={"Add Record"} isLoading={loading} onPress={() => {
+        <SubmitButton color={COLORS.green6} name={"Add Record"} onPress={() => {
           isSubmit(true);
           handleSubmit();
-
-          //setModalVisible(false)
-          //navigation.navigate("records")
         }} />
       </View>
     )
@@ -627,6 +620,7 @@ const AddRecord = ({ navigation, route }) => {
   return (
     <>
       <Modal visible={modalVisible} animationType="slide" presentationStyle="formSheet">
+        {loading && <Confirmations visible={loading} message={"Adding Record"} icon={"addfile"} />}
         <ScreenWrapper>
           <Formik
             initialValues={initialValues}
@@ -717,7 +711,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   radio_button_text: {
-    fontSize: 18,
+    fontSize: 15,
     color: "grey"
   }
 })
